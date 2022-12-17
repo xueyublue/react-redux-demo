@@ -1,4 +1,6 @@
 import { compose, pipe } from "lodash/fp";
+import { Map } from "immutable";
+import { produce } from "immer";
 
 // -----------------------------------------
 // !functions as first-class citizens
@@ -100,5 +102,30 @@ console.log("transform4: " + transform4(input));
 // memory overhead
 
 // -----------------------------------------
-// !practise immutability
+// !immutable.js
 // ----------------------------------------
+let book = Map({ title: "Harry Potter" });
+
+function publish(book) {
+  return book.set("isPublished", true);
+}
+
+book = publish(book);
+
+console.log(book.toJS());
+console.log(book.get("title"));
+
+// -----------------------------------------
+// !immer.js
+// ----------------------------------------
+let product = { name: "iPhone 100 Max Pro" };
+
+function publishProduct(product) {
+  return produce(product, (draftProduct) => {
+    draftProduct.isPuhlished = true;
+  });
+}
+
+const updatedProduct = publishProduct(product);
+
+console.log(updatedProduct);
