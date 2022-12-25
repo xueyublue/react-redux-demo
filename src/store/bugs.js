@@ -1,4 +1,5 @@
-import { createAction, createReducer, createSlice } from "@reduxjs/toolkit";
+import { createSlice } from "@reduxjs/toolkit";
+import { createSelector } from "reselect";
 
 let lastId = 0;
 
@@ -29,7 +30,13 @@ export const { bugAdded, bugResolved, bugRemoved } = slice.actions;
 export default slice.reducer;
 
 // Selectors
-export const selectUnresolvedBugs = (state) => state.entities.bugs.filter((bug) => !bug.resolved);
+// export const selectUnresolvedBugs = (state) => state.entities.bugs.filter((bug) => !bug.resolved);
+
+// Better approach to use selector - better performance
+export const selectUnresolvedBugs = createSelector(
+  (state) => state.entities.bugs,
+  (bugs) => bugs.filter((bug) => !bug.resolved) // this method will never been executed if [bugs] not changed
+);
 
 // !option 2
 // // Action creators
