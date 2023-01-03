@@ -14,9 +14,9 @@ import { projectAdded } from "./store/projects";
 const store = configureStore();
 
 // subscribe store changes
-const unsubscribe = store.subscribe(() => {
-  console.log("Store changed:", store.getState());
-});
+// const unsubscribe = store.subscribe(() => {
+//   console.log("Store changed:", store.getState());
+// });
 
 // dispatch actions
 store.dispatch(bugAdded({ description: "Bug 1" }));
