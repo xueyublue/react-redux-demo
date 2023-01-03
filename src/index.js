@@ -29,6 +29,10 @@ store.dispatch(userAdded({ name: "User 1" }));
 
 store.dispatch(bugAssignedToUser({ bugId: 1, userId: 1 }));
 
+store.dispatch((dispatch, getState) => {
+  dispatch({ type: "bugsReceived", bugs: [1, 2, 3] });
+});
+
 // access to store state
 // console.log(store.getState());
 
