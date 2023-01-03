@@ -3,29 +3,42 @@ import { createSelector } from "reselect";
 
 let lastId = 0;
 
+const bugAddedHandler = (state, action) => {
+  state.push({
+    id: ++lastId,
+    description: action.payload.description,
+    resolved: false,
+  });
+};
+
+const bugResolvedHandler = (state, action) => {
+  const index = state.findIndex((bug) => bug.id === action.payload.id);
+  state[index].resolved = true;
+};
+
+const bugRemovedHandler = (state, action) => {
+  const index = state.findIndex((bug) => bug.id === action.payload.id);
+  state.splice(index, 1);
+};
+
+const bugAssignedToUserHandler = (state, action) => {
+  const { bugId, userId } = action.payload;
+  const index = state.findIndex((bug) => bug.id === bugId);
+  state[index].userId = userId;
+};
+
 const slice = createSlice({
   name: "bugs",
   initialState: [],
   reducers: {
-    bugAdded: (state, action) => {
-      state.push({
-        id: ++lastId,
-        description: action.payload.description,
-        resolved: false,
-      });
-    },
-    bugResolved: (state, action) => {
-      const index = state.findIndex((bug) => bug.id === action.payload.id);
-      state[index].resolved = true;
-    },
-    bugRemoved: (state, action) => {
-      const index = state.findIndex((bug) => bug.id === action.payload.id);
-      state.splice(index, 1);
-    },
+    bugAdded: bugAddedHandler,
+    bugResolved: bugResolvedHandler,
+    bugRemoved: bugRemovedHandler,
+    bugAssignedToUser: bugAssignedToUserHandler,
   },
 });
 
-export const { bugAdded, bugResolved, bugRemoved } = slice.actions;
+export const { bugAdded, bugResolved, bugRemoved, bugAssignedToUser } = slice.actions;
 
 export default slice.reducer;
 
@@ -37,6 +50,12 @@ export const selectUnresolvedBugs = createSelector(
   (state) => state.entities.bugs,
   (bugs) => bugs.filter((bug) => !bug.resolved) // this method will never been executed if [bugs] not changed
 );
+
+export const selectBugsByUser = (userId) =>
+  createSelector(
+    (state) => state.entities.bugs,
+    (bugs) => bugs.filter((bug) => bug.userId === userId)
+  );
 
 // !option 2
 // // Action creators
