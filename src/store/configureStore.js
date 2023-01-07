@@ -2,6 +2,7 @@ import { configureStore } from "@reduxjs/toolkit";
 import reducer from "./reducer";
 import logger from "./middleware/logger";
 // import func from "./middleware/func";
+import api from "./middleware/api";
 
 export default function configureAppStore() {
   // option 1: to register customized middleware
@@ -11,6 +12,6 @@ export default function configureAppStore() {
   // redux toolkit bu default providing functionalities to dispatch function actions
   return configureStore({
     reducer,
-    middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(logger("console")),
+    middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(logger("console"), api),
   });
 }

@@ -47,3 +47,12 @@ console.log("Unresolved Bugs", unResolvedBugs);
 
 const userBugs = selectBugsByUser(1)(store.getState());
 console.log("User Bugs", userBugs);
+
+store.dispatch({
+  type: "apiCallBegan",
+  payload: {
+    url: "/bugs",
+    onSuccess: "bugsReceived",
+    onError: "apiRequestFailed",
+  },
+});
