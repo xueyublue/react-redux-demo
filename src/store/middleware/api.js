@@ -18,7 +18,7 @@ const api =
         data,
       })
       .then((res) => dispatch({ type: onSuccess, payload: res.data }))
-      .catch((err) => dispatch({ type: onError, payload: err }));
+      .catch((err) => dispatch({ type: onError, payload: err.message }));
   };
 
 export default api;
