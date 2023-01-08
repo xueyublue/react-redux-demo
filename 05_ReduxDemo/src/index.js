@@ -6,10 +6,10 @@ import {
   bugResolved,
   selectUnresolvedBugs,
   selectBugsByUser,
+  loadBugs,
 } from "./store/bugs";
 import { userAdded } from "./store/users";
 import { projectAdded } from "./store/projects";
-import { apiCallBegan } from "./store/api";
 
 // create store
 const store = configureStore();
@@ -38,9 +38,5 @@ console.log("Unresolved Bugs", unResolvedBugs);
 const userBugs = selectBugsByUser(1)(store.getState());
 console.log("User Bugs", userBugs);
 
-store.dispatch(
-  apiCallBegan({
-    url: "/bugs",
-    onSuccess: "bugsReceived",
-  })
-);
+// load bugs via API call
+store.dispatch(loadBugs());

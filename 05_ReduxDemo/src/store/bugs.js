@@ -1,5 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { createSelector } from "reselect";
+import { apiCallBegan } from "./api";
 
 let lastId = 0;
 
@@ -27,6 +28,10 @@ const bugAssignedToUserHandler = (state, action) => {
   state.list[index].userId = userId;
 };
 
+const bugsReceivedHandler = (state, action) => {
+  state.list = action.payload;
+};
+
 const slice = createSlice({
   name: "bugs",
   initialState: {
@@ -39,12 +44,21 @@ const slice = createSlice({
     bugResolved: bugResolvedHandler,
     bugRemoved: bugRemovedHandler,
     bugAssignedToUser: bugAssignedToUserHandler,
+    bugsReceived: bugsReceivedHandler,
   },
 });
 
-export const { bugAdded, bugResolved, bugRemoved, bugAssignedToUser } = slice.actions;
+export const { bugAdded, bugResolved, bugRemoved, bugAssignedToUser, bugsReceived } = slice.actions;
 
 export default slice.reducer;
+
+// action creators
+const url = "/bugs";
+export const loadBugs = () =>
+  apiCallBegan({
+    url: url,
+    onSuccess: bugsReceived.type,
+  });
 
 // Selectors
 // export const selectUnresolvedBugs = (state) => state.entities.bugs.filter((bug) => !bug.resolved);
