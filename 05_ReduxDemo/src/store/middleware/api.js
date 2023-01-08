@@ -1,10 +1,11 @@
 import axios from "axios";
+import { apiCallBegan, apiCallSuccess, apiCallFailed } from "../api";
 
 const api =
   ({ dispatch }) =>
   (next) =>
   (action) => {
-    if (action.type !== "apiCallBegan") {
+    if (action.type !== apiCallBegan.type) {
       return next(action);
     }
     // this is to make sure apiCallBegan action show in redux dev tool
@@ -17,8 +18,14 @@ const api =
         method,
         data,
       })
-      .then((res) => dispatch({ type: onSuccess, payload: res.data }))
-      .catch((err) => dispatch({ type: onError, payload: err.message }));
+      .then((res) => {
+        dispatch(apiCallSuccess(res.data));
+        if (onSuccess) dispatch({ type: onSuccess, payload: res.data });
+      })
+      .catch((err) => {
+        dispatch(apiCallFailed(err.message));
+        if (onError) dispatch({ type: onError, payload: err.message });
+      });
   };
 
 export default api;
