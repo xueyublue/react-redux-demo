@@ -3,15 +3,9 @@ import { createSelector } from "reselect";
 import moment from "moment";
 import { apiCallBegan } from "./api";
 
-let lastId = 0;
-
 // handlers
 const bugAddedHandler = (state, action) => {
-  state.list.push({
-    id: ++lastId,
-    description: action.payload.description,
-    resolved: false,
-  });
+  state.list.push(action.payload);
 };
 
 const bugResolvedHandler = (state, action) => {
@@ -25,7 +19,8 @@ const bugRemovedHandler = (state, action) => {
 };
 
 const bugAssignedToUserHandler = (state, action) => {
-  const { bugId, userId } = action.payload;
+  // rename id to bugId
+  const { id: bugId, userId } = action.payload;
   const index = state.list.findIndex((bug) => bug.id === bugId);
   state.list[index].userId = userId;
 };
@@ -90,6 +85,33 @@ export const loadBugs = () => (dispatch, getState) => {
   );
 };
 
+export const addBug = (bug) =>
+  apiCallBegan({
+    url,
+    method: "post",
+    data: bug,
+    onSuccess: bugAdded.type,
+  });
+
+export const resolveBug = (id) =>
+  apiCallBegan({
+    url: url + "/" + id,
+    method: "patch",
+    data: {
+      resolved: true,
+    },
+    onSuccess: bugResolved.type,
+  });
+
+export const assignBugToUser = (bugId, userId) =>
+  apiCallBegan({
+    url: url + "/" + bugId,
+    method: "patch",
+    data: { userId },
+    onSuccess: bugAssignedToUser.type,
+  });
+
+// !use here if you dont nee caching
 // export const loadBugs = () =>
 //   apiCallBegan({
 //     url: url,
