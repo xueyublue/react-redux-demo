@@ -59,7 +59,7 @@ const slice = createSlice({
 });
 
 // export
-export const { bugAdded, bugResolved, bugRemoved, bugAssignedToUser, bugsRequested, bugsRequestFailed, bugsReceived } =
+const { bugAdded, bugResolved, bugRemoved, bugAssignedToUser, bugsRequested, bugsRequestFailed, bugsReceived } =
   slice.actions;
 
 export default slice.reducer;
