@@ -28,8 +28,17 @@ const bugAssignedToUserHandler = (state, action) => {
   state.list[index].userId = userId;
 };
 
+const bugsRequestedHandler = (state, action) => {
+  state.loading = true;
+};
+
+const bugsRequestFailedHandler = (state, action) => {
+  state.loading = false;
+};
+
 const bugsReceivedHandler = (state, action) => {
   state.list = action.payload;
+  state.loading = false;
 };
 
 const slice = createSlice({
@@ -44,11 +53,14 @@ const slice = createSlice({
     bugResolved: bugResolvedHandler,
     bugRemoved: bugRemovedHandler,
     bugAssignedToUser: bugAssignedToUserHandler,
+    bugsRequested: bugsRequestedHandler,
+    bugsRequestFailed: bugsRequestFailedHandler,
     bugsReceived: bugsReceivedHandler,
   },
 });
 
-export const { bugAdded, bugResolved, bugRemoved, bugAssignedToUser, bugsReceived } = slice.actions;
+export const { bugAdded, bugResolved, bugRemoved, bugAssignedToUser, bugsRequested, bugsRequestFailed, bugsReceived } =
+  slice.actions;
 
 export default slice.reducer;
 
@@ -57,7 +69,9 @@ const url = "/bugs";
 export const loadBugs = () =>
   apiCallBegan({
     url: url,
+    onStart: bugsRequested.type,
     onSuccess: bugsReceived.type,
+    onError: bugsRequestFailed.type,
   });
 
 // Selectors

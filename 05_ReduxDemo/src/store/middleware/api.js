@@ -8,9 +8,10 @@ const api =
     if (action.type !== apiCallBegan.type) {
       return next(action);
     }
+    const { url, method, data, onStart, onSuccess, onError } = action.payload;
+    if (onStart) dispatch({ type: onStart });
     // this is to make sure apiCallBegan action show in redux dev tool
     next(action);
-    const { url, method, data, onSuccess, onError } = action.payload;
     axios
       .request({
         baseURL: "http://localhost:9004/api",
