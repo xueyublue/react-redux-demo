@@ -40,3 +40,6 @@ console.log("User Bugs", userBugs);
 
 // load bugs via API call
 store.dispatch(loadBugs());
+setTimeout(() => {
+  store.dispatch(loadBugs());
+}, 2000);

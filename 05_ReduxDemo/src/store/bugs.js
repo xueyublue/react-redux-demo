@@ -1,5 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { createSelector } from "reselect";
+import moment from "moment";
 import { apiCallBegan } from "./api";
 
 let lastId = 0;
@@ -40,6 +41,7 @@ const bugsRequestFailedHandler = (state, action) => {
 const bugsReceivedHandler = (state, action) => {
   state.list = action.payload;
   state.loading = false;
+  state.lastFetch = Date.now();
 };
 
 // slice
@@ -69,13 +71,32 @@ export default slice.reducer;
 
 // action creators
 const url = "/bugs";
-export const loadBugs = () =>
-  apiCallBegan({
-    url: url,
-    onStart: bugsRequested.type,
-    onSuccess: bugsReceived.type,
-    onError: bugsRequestFailed.type,
-  });
+
+export const loadBugs = () => (dispatch, getState) => {
+  const { lastFetch } = getState().entities.bugs;
+  // do not fetch server in 10 minutes
+  const diffInSeconds = moment().diff(moment(lastFetch), "seconds");
+  if (diffInSeconds < 60) {
+    console.log(`Last fetch is ${diffInSeconds} second(s) ago, not going to fetch server.`);
+    return;
+  }
+  dispatch(
+    apiCallBegan({
+      url,
+      onStart: bugsRequested.type,
+      onSuccess: bugsReceived.type,
+      onError: bugsRequestFailed.type,
+    })
+  );
+};
+
+// export const loadBugs = () =>
+//   apiCallBegan({
+//     url: url,
+//     onStart: bugsRequested.type,
+//     onSuccess: bugsReceived.type,
+//     onError: bugsRequestFailed.type,
+//   });
 
 // Selectors
 // export const selectUnresolvedBugs = (state) => state.entities.bugs.filter((bug) => !bug.resolved);
