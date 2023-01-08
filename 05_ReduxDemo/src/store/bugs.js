@@ -4,6 +4,7 @@ import { apiCallBegan } from "./api";
 
 let lastId = 0;
 
+// handlers
 const bugAddedHandler = (state, action) => {
   state.list.push({
     id: ++lastId,
@@ -41,6 +42,7 @@ const bugsReceivedHandler = (state, action) => {
   state.loading = false;
 };
 
+// slice
 const slice = createSlice({
   name: "bugs",
   initialState: {
@@ -59,6 +61,7 @@ const slice = createSlice({
   },
 });
 
+// export
 export const { bugAdded, bugResolved, bugRemoved, bugAssignedToUser, bugsRequested, bugsRequestFailed, bugsReceived } =
   slice.actions;
 
